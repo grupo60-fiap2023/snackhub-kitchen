@@ -1,13 +1,14 @@
 import json
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
-from sqlalchemy import create_engine, Table, MetaData, select, update, insert, Column, String, Float, Integer
+from sqlalchemy import create_engine, Table, MetaData, select, update, insert, Column, String, Float, Integer, DateTime
 from sqlalchemy.exc import NoResultFound
 from sqlalchemy.orm import sessionmaker, Session
+from sqlalchemy.sql import func
 
 # Configuração do SQLAlchemy
-#DATABASE_URL = "mysql+mysqlconnector://root:123456@snackhub-mysql-db-kitchen:3306/pedidos"
-DATABASE_URL = "mysql+mysqlconnector://root:123456@localhost:3307/pedidos"
+DATABASE_URL = "mysql+mysqlconnector://root:123456@snackhub-mysql-db-kitchen:3306/pedidos"
+#DATABASE_URL = "mysql+mysqlconnector://root:123456@localhost:3307/pedidos"
 engine = create_engine(DATABASE_URL)
 metadata = MetaData()
 
@@ -16,7 +17,8 @@ pedidos = Table(
    'LogStatusPedido', metadata, 
    Column('id', String(255), primary_key=True),
    Column('numeropedido', Integer),
-#  Column('timestamp', date), 
+   Column('timestamp', DateTime(timezone = True), server_default=func.now()), 
+   Column('updatedAt', DateTime(timezone = True), onupdate=func.now()),
    Column('status', Integer)
 )
 metadata.create_all(engine)
@@ -33,7 +35,6 @@ class CriarPedido(BaseModel):
 class StatusPedido(BaseModel):
     id: str
     numeropedido: int
-#   timestamp : datetime
     status : int
 
 @app.post("/criar_pedido")
@@ -44,7 +45,7 @@ async def criar_pedido(pedido: CriarPedido):
         insert_query = insert(pedidos).values(
             id=pedido.id,
             numeropedido = pedido.numeropedido,
-#           timestamp=pedido.timestamp,
+            timestamp = func.now(),
             status=1)
         result = session.execute(insert_query)
         # Confirmar as mudanças
@@ -121,13 +122,12 @@ async def obter_pedidos_por_status(status : int):
             for i in result:
                 d = {'id' : i[0],
                      'numeropedido' : i[1],
-                     'status' : i[2]}
+                     'timestamp' : i[2],
+                     'updatedAt' : i[3],
+                     'status' : i[4]}
                 list.append(d)
             
             return {"data": list}
-
-            # result_dict = dict(zip(column_names, result))
-            # return StatusPedido(**result_dict)
         except NoResultFound:
             raise HTTPException(status_code=404, detail="Nenhum pedido com esse status foi encontrado.")
         except:
