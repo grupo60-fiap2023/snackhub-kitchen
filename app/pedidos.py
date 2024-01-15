@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from fastapi import Depends, HTTPException, status, APIRouter
 from app.database import get_db
 from sqlalchemy.sql import func
-from sqlalchemy import Table, MetaData, Column, DateTime, String, Integer, update
+from sqlalchemy import Table, MetaData, Column,TIMESTAMP, String, Integer, update
 
 metadata = MetaData()
 
@@ -11,8 +11,8 @@ pedidos = Table(
    'LogStatusPedido', metadata, 
    Column('id', String(255), primary_key=True),
    Column('numeropedido', Integer),
-   Column('timestamp', DateTime(timezone = True), server_default=func.now()), 
-   Column('updatedAt', DateTime(timezone = True), server_default=func.now(), onupdate=func.now()),
+   Column('timestamp', TIMESTAMP(timezone = True), server_default=func.now()), 
+   Column('updatedAt', TIMESTAMP(timezone = True), server_default=func.now(), onupdate=func.now()),
    Column('status', Integer)
 )
 
@@ -56,18 +56,28 @@ async def AtualizarStatus(idPedido : str, status: int, db: Session):
         )
     if pedido_result.status +1 != status:
          raise HTTPException(status_code=400, detail=f"Pedido {idPedido} não pode mudar para o status {status}")
-    try:
-        update_query = update(pedidos).where(pedidos.columns.id == idPedido).values(
-                    status=status
-                )
-        result = db.execute(update_query)
-        db.commit()
-        if result.rowcount ==0:
-                    raise HTTPException(status_code=400, detail="Erro ao atualizar status do produto.")
-        return {"Message": "Atualização de status criado com sucesso"}
-    except Exception as e:
-                db.rollback()
-                raise HTTPException(status_code=400, detail=f"Erro ao atualizar status do produto: {e}")
+    payload = schemas.StatusPedidoSchema()
+    payload.status = status
+
+    update_data = payload.dict(exclude_unset=True)
+    get_query.filter(models.StatusPedido.id == idPedido).update(
+        update_data, synchronize_session=False
+    )
+    db.commit()
+    db.refresh(pedido_result)
+    return {"Status": "Success", "User": pedido_result}
+    # try:
+    #     update_query = update(pedidos).where(pedidos.columns.id == idPedido).values(
+    #                 status=status
+    #             )
+    #     result = db.execute(update_query)
+    #     db.commit()
+    #     if result.rowcount ==0:
+    #                 raise HTTPException(status_code=400, detail="Erro ao atualizar status do produto.")
+    #     return {"Message": "Atualização de status criado com sucesso"}
+    # except Exception as e:
+    #             db.rollback()
+    #             raise HTTPException(status_code=400, detail=f"Erro ao atualizar status do produto: {e}")
 
 @router.get("/pedidos/{status}")
 async def obter_pedidos_por_status(status : int, db: Session = Depends(get_db)):
