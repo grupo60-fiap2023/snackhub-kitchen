@@ -1,1 +1,1 @@
-pytest tests/unit/test_insert.py -v -s
+pytest tests/unit -v -s

@@ -3,18 +3,6 @@ from sqlalchemy.orm import Session
 from fastapi import Depends, HTTPException, status, APIRouter
 from app.database import get_db
 from sqlalchemy.sql import func
-from sqlalchemy import Table, MetaData, Column,TIMESTAMP, String, Integer, update
-
-metadata = MetaData()
-
-pedidos = Table(
-   'LogStatusPedido', metadata, 
-   Column('id', String(255), primary_key=True),
-   Column('numeropedido', Integer),
-   Column('timestamp', TIMESTAMP(timezone = True), server_default=func.now()), 
-   Column('updatedAt', TIMESTAMP(timezone = True), server_default=func.now(), onupdate=func.now()),
-   Column('status', Integer)
-)
 
 router = APIRouter()
 
@@ -50,10 +38,7 @@ async def AtualizarStatus(idPedido : str, status: int, db: Session):
     pedido_result = get_query.first()
 
     if not pedido_result:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail = f"Pedido numero {idPedido} não encontrado"
-        )
+        raise HTTPException(status_code=404, detail = f"Pedido numero {idPedido} não encontrado")
     if pedido_result.status +1 != status:
          raise HTTPException(status_code=400, detail=f"Pedido {idPedido} não pode mudar para o status {status}")
     payload = schemas.StatusPedidoSchema()
