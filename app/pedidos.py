@@ -62,6 +62,17 @@ async def obter_pedidos_por_status(status : int, db: Session = Depends(get_db)):
     result = (
          db.query(models.StatusPedido)
          .filter(models.StatusPedido.status == status)
+         .order_by(models.StatusPedido.timestamp.desc())
+         .limit(10)
          .all()
     )
     return {"Status" : "Success", "Results" : len(result), "Pedidos" : result}
+@router.delete("/pedidos")
+async def excluir_registros_teste(db: Session = Depends(get_db)):
+    registroParaExcluir = db.query(models.StatusPedido).filter_by(id = "azumas").first()
+    if registroParaExcluir:
+        db.delete(registroParaExcluir)
+        db.commit()
+        return {"Status" : "Success"}
+    else:
+        raise HTTPException(status_code=404, detail = f"Registro teste não encontrado")
