@@ -38,31 +38,24 @@ async def AtualizarStatus(idPedido : str, status: int, db: Session):
     pedido_result = get_query.first()
 
     if not pedido_result:
-        raise HTTPException(status_code=404, detail = f"Pedido numero {idPedido} não encontrado")
+        raise HTTPException(status_code=404, detail = f"Pedido numero '{idPedido}' não encontrado")
     if pedido_result.status +1 != status:
-         raise HTTPException(status_code=400, detail=f"Pedido {idPedido} não pode mudar para o status {status}")
+         raise HTTPException(status_code=400, detail=f"Pedido '{idPedido}' não pode mudar para o status {status}")
     payload = schemas.StatusPedidoSchema()
     payload.status = status
 
-    update_data = payload.dict(exclude_unset=True)
-    get_query.filter(models.StatusPedido.id == idPedido).update(
-        update_data, synchronize_session=False
-    )
-    db.commit()
-    db.refresh(pedido_result)
-    return {"Status": "Success", "User": pedido_result}
-    # try:
-    #     update_query = update(pedidos).where(pedidos.columns.id == idPedido).values(
-    #                 status=status
-    #             )
-    #     result = db.execute(update_query)
-    #     db.commit()
-    #     if result.rowcount ==0:
-    #                 raise HTTPException(status_code=400, detail="Erro ao atualizar status do produto.")
-    #     return {"Message": "Atualização de status criado com sucesso"}
-    # except Exception as e:
-    #             db.rollback()
-    #             raise HTTPException(status_code=400, detail=f"Erro ao atualizar status do produto: {e}")
+    try:
+        update_data = payload.dict(exclude_unset=True)
+        get_query.filter(models.StatusPedido.id == idPedido).update(
+            update_data, synchronize_session=False
+        )
+        db.commit()
+        db.refresh(pedido_result)
+        success_message = f"Pedido '{idPedido}' atualizado com sucesso"
+        return {"message": success_message}
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=400, detail=f"Erro ao atualizar status do produto: {e}")
 
 @router.get("/pedidos/{status}")
 async def obter_pedidos_por_status(status : int, db: Session = Depends(get_db)):
