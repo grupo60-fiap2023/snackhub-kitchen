@@ -1,0 +1,1 @@
+sonar-scanner.bat -D"sonar.projectKey=snackhub-kitchen-local" -D"sonar.sources=." -D"sonar.host.url=http://localhost:9000" -D"sonar.token=sqp_cc8b380d2aaf89ded3b8b0110eb87199f182a69f"
