@@ -4,8 +4,8 @@ from sqlalchemy.sql import func
 
 
 class StatusPedidoSchema(BaseModel):
-    id: str | None = None
+    id: str = "None"
     numeropedido: int = 0
-    timestamp : datetime | None = func.now()
-    updatedAt : datetime | None = func.now()
+    timestamp : datetime = func.now()
+    updatedAt : datetime = func.now()
     status : int = 1
