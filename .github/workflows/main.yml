@@ -18,8 +18,6 @@ jobs:
           python-version: 3.12.1
       - name: Install Dependencies
         run: pip install -r requirements.txt
-      - name: Copiar arquivo de propriedades do sonar para a raiz
-        run: cp sonar-project.properties .
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
         env:
