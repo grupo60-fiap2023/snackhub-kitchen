@@ -24,3 +24,11 @@ jobs:
         uses: SonarSource/sonarcloud-github-action@master
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          args: >
+            -Dsonar.projectBaseDir=${{ github.workspace }}
+            -Dsonar.host.url=https://sonarcloud.io
+            -Dsonar.organization=grupo60-fiap2023
+            -Dsonar.projectKey=snackhub-kitchen
+            -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+            -Dsonar.python.version=3.12.1
