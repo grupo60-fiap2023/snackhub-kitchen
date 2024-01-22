@@ -1,9 +1,13 @@
 from fastapi.testclient import TestClient
+import os
+
+os.environ["TESTING"] = "True"
+
 from app.main import app
 
 client = TestClient(app)
 
-def test_noPreviousOrder_insertOrder_orderInserted():
+def test_noPreviousOrder_insertOrder_orderInserted():    
     sample_payload = {
         "id" : "azumas",
         "numeropedido" : "12345678",
@@ -15,7 +19,7 @@ def test_noPreviousOrder_insertOrder_orderInserted():
         "message": "Pedido criado com sucesso"
     }
 
-def test_hasPreviousOrder_insertOrder_duplicatedOrder():
+def test_hasPreviousOrder_insertOrder_duplicatedOrder():    
     sample_payload = {
         "id" : "azumas",
         "numeropedido" : "12345678",
@@ -26,3 +30,4 @@ def test_hasPreviousOrder_insertOrder_duplicatedOrder():
 
     assert response2.status_code == 400
 
+del os.environ["TESTING"]
