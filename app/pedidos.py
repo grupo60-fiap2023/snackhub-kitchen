@@ -21,37 +21,37 @@ async def criar_pedido(pedido: schemas.StatusPedidoSchema, db: Session = Depends
         db.rollback()
         raise HTTPException(status_code=400, detail=f"Erro ao registrar pedido: {e}")
 
-@router.put("/statusempreparacao/{idPedido}")
-async def atualizar_status_em_preparacao(idPedido : str, db: Session = Depends(get_db)):
-    return await AtualizarStatus(idPedido, 2, db)
+@router.put("/statusempreparacao/{id_pedido}")
+async def atualizar_status_em_preparacao(id_pedido : str, db: Session = Depends(get_db)):
+    return await atualizar_status(id_pedido, 2, db)
 
-@router.put("/statuspronto/{idPedido}")
-async def atualizar_status_pronto(idPedido : str, db: Session = Depends(get_db)):
-    return await AtualizarStatus(idPedido, 3, db)
+@router.put("/statuspronto/{id_pedido}")
+async def atualizar_status_pronto(id_pedido : str, db: Session = Depends(get_db)):
+    return await atualizar_status(id_pedido, 3, db)
 
-@router.put("/statusfinalizado/{idPedido}")
-async def atualizar_status_finalizado(idPedido : str, db: Session = Depends(get_db)):
-    return await AtualizarStatus(idPedido, 4, db)
+@router.put("/statusfinalizado/{id_pedido}")
+async def atualizar_status_finalizado(id_pedido : str, db: Session = Depends(get_db)):
+    return await atualizar_status(id_pedido, 4, db)
 
-async def AtualizarStatus(idPedido : str, status: int, db: Session):
-    get_query = db.query(models.StatusPedido).filter(models.StatusPedido.id == idPedido)
+async def atualizar_status(id_pedido : str, status: int, db: Session):
+    get_query = db.query(models.StatusPedido).filter(models.StatusPedido.id == id_pedido)
     pedido_result = get_query.first()
 
     if not pedido_result:
-        raise HTTPException(status_code=404, detail = f"Pedido numero '{idPedido}' não encontrado")
+        raise HTTPException(status_code=404, detail = f"Pedido numero '{id_pedido}' não encontrado")
     if pedido_result.status +1 != status:
-         raise HTTPException(status_code=400, detail=f"Pedido '{idPedido}' não pode mudar para o status {status}")
+         raise HTTPException(status_code=400, detail=f"Pedido '{id_pedido}' não pode mudar para o status {status}")
     payload = schemas.StatusPedidoSchema()
     payload.status = status
 
     try:
         update_data = payload.dict(exclude_unset=True)
-        get_query.filter(models.StatusPedido.id == idPedido).update(
+        get_query.filter(models.StatusPedido.id == id_pedido).update(
             update_data, synchronize_session=False
         )
         db.commit()
         db.refresh(pedido_result)
-        success_message = f"Pedido '{idPedido}' atualizado com sucesso"
+        success_message = f"Pedido '{id_pedido}' atualizado com sucesso"
         return {"message": success_message}
     except Exception as e:
         db.rollback()
@@ -69,10 +69,10 @@ async def obter_pedidos_por_status(status : int, db: Session = Depends(get_db)):
     return {"Status" : "Success", "Results" : len(result), "Pedidos" : result}
 @router.delete("/pedidos")
 async def excluir_registros_teste(db: Session = Depends(get_db)):
-    registroParaExcluir = db.query(models.StatusPedido).filter_by(id = "azumas").first()
-    if registroParaExcluir:
-        db.delete(registroParaExcluir)
+    registro_para_excluir = db.query(models.StatusPedido).filter_by(id = "azumas").first()
+    if registro_para_excluir:
+        db.delete(registro_para_excluir)
         db.commit()
         return {"Status" : "Success"}
     else:
-        raise HTTPException(status_code=404, detail = f"Registro teste não encontrado")
+        raise HTTPException(status_code=404, detail = "Registro teste não encontrado")

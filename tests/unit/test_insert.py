@@ -7,13 +7,15 @@ from app.main import app
 
 client = TestClient(app)
 
+CREATE_URL = "/kitchen/criar_pedido"
+
 def test_noPreviousOrder_insertOrder_orderInserted():    
     sample_payload = {
         "id" : "azumas",
         "numeropedido" : "12345678",
         "timestamp" : "2023-03-17T00:04:32"
     }
-    response = client.post("/kitchen/criar_pedido", json=sample_payload)
+    response = client.post(CREATE_URL, json=sample_payload)
     assert response.status_code == 201
     assert response.json() == {
         "message": "Pedido criado com sucesso"
@@ -25,8 +27,8 @@ def test_hasPreviousOrder_insertOrder_duplicatedOrder():
         "numeropedido" : "12345678",
         "timestamp" : "2023-03-17T00:04:32"
     }
-    response1 = client.post("/kitchen/criar_pedido", json=sample_payload)
-    response2 = client.post("/kitchen/criar_pedido", json=sample_payload)
+    client.post(CREATE_URL, json=sample_payload)
+    response2 = client.post(CREATE_URL, json=sample_payload)
 
     assert response2.status_code == 400
 
