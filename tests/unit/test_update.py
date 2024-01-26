@@ -6,21 +6,21 @@ client = TestClient(app)
 AZUMAS_SUCCESS = "Pedido 'azumas' atualizado com sucesso"
 NONEXISTENT_NOT_FOUND = "Pedido numero 'nonexistent' não encontrado"
 #Em preparação
-def test_orderAwaiting_statusToPreparing_orderPreparing():
+def test_orderawaiting_statustopreparing_orderpreparing():
     response = client.put('/kitchen/statusempreparacao/azumas')
     assert response.status_code == 200
     assert response.json() == {
         "message" : AZUMAS_SUCCESS
     }
 
-def test_orderStatusPreparing_statusToPreparing_orderNotUpdated():
+def test_orderstatuspreparing_statustopreparing_ordernotupdated():
     response = client.put('/kitchen/statusempreparacao/azumas')
     assert response.status_code == 400
     assert response.json() == {
             "detail": "Pedido 'azumas' não pode mudar para o status 2"
     }
 
-def test_noPreviousOrder_statusToPreparing_orderNotFound():
+def test_nopreviousorder_statustopreparing_ordernotfound():
     response = client.put('/kitchen/statusempreparacao/nonexistent')
     assert response.status_code == 404
     assert response.json() == {
@@ -28,21 +28,21 @@ def test_noPreviousOrder_statusToPreparing_orderNotFound():
     }
 
 #Pronto para entrega
-def test_orderPreparing_statusToReadyToDeliver_orderReadyToDeliver():
+def test_orderpreparing_statustoreadytodeliver_orderreadytodeliver():
     response = client.put('/kitchen/statuspronto/azumas')
     assert response.status_code == 200
     assert response.json() == {
         "message" : AZUMAS_SUCCESS
     }
 
-def test_orderStatusReadyToDeliver_statusToReadyToDeliver_orderNotUpdated():
+def test_orderstatusreadytodeliver_statustoreadytodeliver_ordernotupdated():
     response = client.put('/kitchen/statuspronto/azumas')
     assert response.status_code == 400
     assert response.json() == {
             "detail": "Pedido 'azumas' não pode mudar para o status 3"
     }
 
-def test_noPreviousOrder_statusToReadyToDeliver_orderNotFound():
+def test_nopreviousorder_statustoreadytodeliver_ordernotfound():
     response = client.put('/kitchen/statuspronto/nonexistent')
     assert response.status_code == 404
     assert response.json() == {
@@ -50,21 +50,21 @@ def test_noPreviousOrder_statusToReadyToDeliver_orderNotFound():
     }
     
 #Finalizado
-def test_orderReadyToDeliver_statusToDone_orderDone():
+def test_orderreadytodeliver_statustodone_orderdone():
     response = client.put('/kitchen/statusfinalizado/azumas')
     assert response.status_code == 200
     assert response.json() == {
         "message" : AZUMAS_SUCCESS
     }
 
-def test_orderStatusDone_statusToDone_orderNotUpdated():
+def test_orderstatusdone_statustodone_ordernotupdated():
     response = client.put('/kitchen/statusfinalizado/azumas')
     assert response.status_code == 400
     assert response.json() == {
             "detail": "Pedido 'azumas' não pode mudar para o status 4"
     }
 
-def test_noPreviousOrder_statusToDone_orderNotFound():
+def test_nopreviousorder_statustodone_ordernotfound():
     response = client.put('/kitchen/statusfinalizado/nonexistent')
     assert response.status_code == 404
     assert response.json() == {

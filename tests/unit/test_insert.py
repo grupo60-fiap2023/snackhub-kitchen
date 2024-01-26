@@ -9,7 +9,7 @@ client = TestClient(app)
 
 CREATE_URL = "/kitchen/criar_pedido"
 
-def test_noPreviousOrder_insertOrder_orderInserted():    
+def test_nopreviousorder_insertorder_orderinserted():    
     sample_payload = {
         "id" : "azumas",
         "numeropedido" : "12345678",
@@ -21,7 +21,7 @@ def test_noPreviousOrder_insertOrder_orderInserted():
         "message": "Pedido criado com sucesso"
     }
 
-def test_hasPreviousOrder_insertOrder_duplicatedOrder():    
+def test_haspreviousorder_insertorder_duplicatedorder():    
     sample_payload = {
         "id" : "azumas",
         "numeropedido" : "12345678",
