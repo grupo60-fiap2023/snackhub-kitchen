@@ -3,8 +3,11 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
 import os
-#URL pra testar em memória usando sqlite.
-#DATABASE_URL = "sqlite://"
+
+MYSQL_USER = os.environ.get("MYSQL_USER")
+MYSQL_PW = os.environ.get("MYSQL_PW")
+IP_APP = os.environ.get("IP_APP")
+PORT = os.environ.get("PORT")
 
 if os.environ.get("TESTING"):
     DATABASE_URL = "sqlite://"
@@ -15,7 +18,8 @@ else:
     #URL para acessar o banco pela imagem (produção)
     #DATABASE_URL = "mysql+mysqlconnector://root:123456@snackhub-mysql-db-kitchen:3306/pedidos"
     #URL para acessar pelo VSCode (debug)
-    DATABASE_URL = "mysql+mysqlconnector://root:123456@localhost:3307/pedidos"
+    DATABASE_URL = f"mysql+mysqlconnector://{MYSQL_USER}:{MYSQL_PW}@{IP_APP}:{PORT}/pedidos"
+    print(DATABASE_URL)
     engine = create_engine(DATABASE_URL)
 
 

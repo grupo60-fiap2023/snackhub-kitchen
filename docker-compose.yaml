@@ -14,6 +14,11 @@ services:
       - db_data:/var/lib/mysql
   pedidos:
     build: .
+    environment:
+      - MYSQL_USER=root
+      - MYSQL_PW=123456
+      - IP_APP=snackhub-mysql-db-kitchen
+      - PORT=3306
     ports:
       - 8080:8080
     depends_on:
