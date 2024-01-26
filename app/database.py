@@ -14,10 +14,7 @@ if os.environ.get("TESTING"):
     engine = create_engine(DATABASE_URL,
                     connect_args={'check_same_thread':False},
                     poolclass=StaticPool)
-else:
-    #URL para acessar o banco pela imagem (produção)
-    #DATABASE_URL = "mysql+mysqlconnector://root:123456@snackhub-mysql-db-kitchen:3306/pedidos"
-    #URL para acessar pelo VSCode (debug)
+else:    
     DATABASE_URL = f"mysql+mysqlconnector://{MYSQL_USER}:{MYSQL_PW}@{IP_APP}:{PORT}/pedidos"
     print(DATABASE_URL)
     engine = create_engine(DATABASE_URL)
