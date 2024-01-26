@@ -28,8 +28,4 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
           args: >
-            -Dsonar.host.url=https://sonarcloud.io
-            -Dsonar.organization=grupo60-fiap2023
-            -Dsonar.projectKey=snackhub-kitchen
-            -Dsonar.login=${{ secrets.SONAR_TOKEN }}
-            -Dsonar.python.version=3.12.1
+            -Dsonar.token=${{ secrets.SONAR_TOKEN }}
