@@ -45,6 +45,6 @@ jobs:
           IMAGE_TAG: ${{ github.sha }}
         run: |
           docker login -u AWS -p $(aws ecr get-login-password --region us-east-1) ${{ env.REGISTRY }}
-          docker build -t ${{ env.REGISTRY }}/${{ env.REPOSITORY }}:kitchen_${{ env.IMAGE_TAG }} -t ${{ env.REGISTRY }}/${{ env.REPOSITORY }}:kitchen_latest . -f Dockerfile
-          docker push ${{ env.REGISTRY }}/${{ env.REPOSITORY }}:kitchen_${{ env.IMAGE_TAG }}
-          docker push ${{ env.REGISTRY }}/${{ env.REPOSITORY }}:kitchen_latest
+          docker build -t ${{ env.REGISTRY }}/${{ env.REPOSITORY }}:snackhub_kitchen_${{ env.IMAGE_TAG }} -t ${{ env.REGISTRY }}/${{ env.REPOSITORY }}:snackhub_kitchen_latest . -f Dockerfile
+          docker push ${{ env.REGISTRY }}/${{ env.REPOSITORY }}:snackhub_kitchen_${{ env.IMAGE_TAG }}
+          docker push ${{ env.REGISTRY }}/${{ env.REPOSITORY }}:snackhub_kitchen_latest
