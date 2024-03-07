@@ -2,7 +2,9 @@ import app.schemas as schemas, app.models as models
 from sqlalchemy.orm import Session
 from fastapi import Depends, HTTPException, status, APIRouter
 from app.database import get_db
-from sqlalchemy.sql import func
+import json
+from app.messages import enviar_mensagem_saida
+
 
 router = APIRouter()
 
@@ -51,6 +53,26 @@ async def atualizar_status(id_pedido : str, status: int, db: Session):
         )
         db.commit()
         db.refresh(pedido_result)
+
+        map_status = {
+            "1" : "Pendente",
+            "2" : "EmPreparacao",
+            "3" : "Pronto",
+            "4" : "Finalizado"
+        }
+        stat = "Padrao"
+        if str(status) in map_status:
+        # Retorna o valor correspondente no dicionário
+            stat = map_status[str(status)]
+        reg = {
+            "order-id" : id_pedido,
+            "status" : stat 
+        }
+
+        json_string = json.dumps(reg)
+
+        enviar_mensagem_saida(json_string)
+
         success_message = f"Pedido '{id_pedido}' atualizado com sucesso"
         return {"message": success_message}
     except Exception as e:
