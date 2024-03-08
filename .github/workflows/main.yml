@@ -22,8 +22,8 @@ jobs:
         run: pip install tox
       - name: Exportar variavel aws
         run: |
-          export AWS-ACCESS=${{secrets.TF_VAR_AWS_ACCESS_KEY}}
-          export AWS-SECRET=${{secrets.TF_VAR_AWS_SECRET_KEY}}
+          echo "AWS-ACCESS=${{ secrets.TF_VAR_AWS_ACCESS_KEY }}" >> $GITHUB_ENV
+          echo "AWS-SECRET=${{ secrets.TF_VAR_AWS_SECRET_KEY }}" >> $GITHUB_ENV
       - name: Run tox
         run: tox -e py
       - name: SonarCloud Scan
