@@ -11,4 +11,4 @@ class StatusPedidoSchema(BaseModel):
     timestamp : datetime = func.now()
     updatedAt : datetime = func.now()
     status : int = 1
-    itens : List[str] = None
+    itens : str = ""

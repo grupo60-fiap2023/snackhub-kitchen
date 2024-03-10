@@ -25,15 +25,11 @@ async def criar_pedido(pedido: schemas.StatusPedidoSchema, db: Session = Depends
 
 @router.put("/statusempreparacao/{id_pedido}")
 async def atualizar_status_em_preparacao(id_pedido : str, db: Session = Depends(get_db)):
-    return await atualizar_status(id_pedido, 2, db)
-
-@router.put("/statuspronto/{id_pedido}")
-async def atualizar_status_pronto(id_pedido : str, db: Session = Depends(get_db)):
-    return await atualizar_status(id_pedido, 3, db)
+    return await atualizar_status(id_pedido, 6, db)
 
 @router.put("/statusfinalizado/{id_pedido}")
 async def atualizar_status_finalizado(id_pedido : str, db: Session = Depends(get_db)):
-    return await atualizar_status(id_pedido, 4, db)
+    return await atualizar_status(id_pedido, 7, db)
 
 async def atualizar_status(id_pedido : str, status: int, db: Session):
     get_query = db.query(models.StatusPedido).filter(models.StatusPedido.id == id_pedido)
@@ -55,10 +51,8 @@ async def atualizar_status(id_pedido : str, status: int, db: Session):
         db.refresh(pedido_result)
 
         map_status = {
-            "1" : "Pendente",
-            "2" : "EmPreparacao",
-            "3" : "Pronto",
-            "4" : "Finalizado"
+            "6" : "IN_PREPARATION",
+            "7" : "FINISHED"
         }
         stat = "Padrao"
         if str(status) in map_status:

@@ -8,8 +8,8 @@ from app.database import get_db
 
 sqs = boto3.client('sqs', region_name=os.environ.get("REGION"), aws_access_key_id=os.environ.get('AWS_ACCESS_KEY_ID'), aws_secret_access_key=os.environ.get('AWS_SECRET_ACCESS_KEY'))
 
-fila_order_succeeded = sqs.get_queue_url(QueueName='order_succeeded.fifo')['QueueUrl']
-fila_order_status = sqs.get_queue_url(QueueName='order-status.fifo')['QueueUrl']
+fila_order_succeeded = sqs.get_queue_url(QueueName='order_successful-topic.fifo')['QueueUrl']
+fila_order_status = sqs.get_queue_url(QueueName='order-status-topic.fifo')['QueueUrl']
 
 def enviar_mensagem_saida(mensagem):
     print(sqs.send_message(
@@ -31,12 +31,12 @@ def processar_mensagens_entrada():
                 corpo_mensagem = json.loads(message['Body'])
                 reg = StatusPedidoSchema()
 
-                reg.id = corpo_mensagem['order-id']
-                reg.numeropedido = corpo_mensagem['ticket-number']
+                reg.id = corpo_mensagem['orderId']
+                reg.numeropedido = corpo_mensagem['orderIdentifier']
                 reg.timestamp = datetime.utcnow()
                 reg.updatedAt = datetime.utcnow()
-                reg.status = 1
-                reg.itens = ", ".join(corpo_mensagem['itens'])
+                reg.status = 5
+                reg.itens = json.dumps(corpo_mensagem['itens'])
                 
                 db = next(get_db())
                 try:

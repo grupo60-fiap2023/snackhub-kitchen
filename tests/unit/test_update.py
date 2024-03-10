@@ -26,28 +26,6 @@ def test_nopreviousorder_statustopreparing_ordernotfound():
     assert response.json() == {
             "detail": NONEXISTENT_NOT_FOUND
     }
-
-#Pronto para entrega
-def test_orderpreparing_statustoreadytodeliver_orderreadytodeliver():
-    response = client.put('/kitchen/statuspronto/azumas')
-    assert response.status_code == 200
-    assert response.json() == {
-        "message" : AZUMAS_SUCCESS
-    }
-
-def test_orderstatusreadytodeliver_statustoreadytodeliver_ordernotupdated():
-    response = client.put('/kitchen/statuspronto/azumas')
-    assert response.status_code == 400
-    assert response.json() == {
-            "detail": "Pedido 'azumas' não pode mudar para o status 3"
-    }
-
-def test_nopreviousorder_statustoreadytodeliver_ordernotfound():
-    response = client.put('/kitchen/statuspronto/nonexistent')
-    assert response.status_code == 404
-    assert response.json() == {
-        "detail": NONEXISTENT_NOT_FOUND
-    }
     
 #Finalizado
 def test_orderreadytodeliver_statustodone_orderdone():
