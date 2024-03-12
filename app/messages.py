@@ -7,9 +7,7 @@ from datetime import datetime
 from app.database import get_db
 
 sqs = boto3.client('sqs', region_name=os.environ.get("REGION"), aws_access_key_id=os.environ.get('AWS_ACCESS_KEY_ID'), aws_secret_access_key=os.environ.get('AWS_SECRET_ACCESS_KEY'))
-print(os.environ.get("REGION"))
-print(os.environ.get("AWS_ACCESS_KEY_ID"))
-print(os.environ.get("AWS_SECRET_ACCESS_KEY"))
+
 fila_order_succeeded = sqs.get_queue_url(QueueName='order_successful-topic.fifo')['QueueUrl']
 fila_order_status = sqs.get_queue_url(QueueName='order-status-topic.fifo')['QueueUrl']
 
