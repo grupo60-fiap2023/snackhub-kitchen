@@ -38,7 +38,7 @@ async def atualizar_status(id_pedido : str, status: int, db: Session):
     if not pedido_result:
         raise HTTPException(status_code=404, detail = f"Pedido numero '{id_pedido}' não encontrado")
     if pedido_result.status +1 != status:
-         raise HTTPException(status_code=400, detail=f"Pedido '{id_pedido}' não pode mudar para o status {status}")
+         raise HTTPException(status_code=400, detail=f"Pedido '{id_pedido}' não pode mudar para o status {status}. Status do pedido: {pedido_result.status}")
     payload = schemas.StatusPedidoSchema()
     payload.status = status
 

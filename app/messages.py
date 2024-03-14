@@ -8,15 +8,13 @@ from app.database import get_db
 
 sqs = boto3.client('sqs', region_name=os.environ.get("REGION"), aws_access_key_id=os.environ.get('AWS_ACCESS_KEY_ID'), aws_secret_access_key=os.environ.get('AWS_SECRET_ACCESS_KEY'))
 
-fila_order_succeeded = sqs.get_queue_url(QueueName='order_successful-topic.fifo')['QueueUrl']
-fila_order_status = sqs.get_queue_url(QueueName='order-status-topic.fifo')['QueueUrl']
+fila_order_succeeded = sqs.get_queue_url(QueueName='order-successful-topic')['QueueUrl']
+fila_order_status = sqs.get_queue_url(QueueName='order-status-topic')['QueueUrl']
 
 def enviar_mensagem_saida(mensagem):
     print(sqs.send_message(
         QueueUrl=fila_order_status,
-        MessageBody=json.dumps(mensagem),
-        MessageGroupId='112',
-        MessageDeduplicationId = '112'))
+        MessageBody=json.dumps(mensagem),))
 
 def processar_mensagens_entrada():
     while True:
@@ -43,6 +41,7 @@ def processar_mensagens_entrada():
                     novo_status_pedido = StatusPedido(**reg.dict())
                     db.add(novo_status_pedido)
                     db.commit()
+                    print("Deu bom!")
                 except Exception as e:
                     print(e)
                 finally:
