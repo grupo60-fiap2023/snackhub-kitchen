@@ -31,7 +31,7 @@ async def atualizar_status_em_preparacao(id_pedido : str, db: Session = Depends(
 async def atualizar_status_finalizado(id_pedido : str, db: Session = Depends(get_db)):
     return await atualizar_status(id_pedido, 7, db)
 
-async def atualizar_status(id_pedido : str, status: int, db: Session):
+async def atualizar_status(id_pedido : int, status: int, db: Session):
     get_query = db.query(models.StatusPedido).filter(models.StatusPedido.id == id_pedido)
     pedido_result = get_query.first()
 
