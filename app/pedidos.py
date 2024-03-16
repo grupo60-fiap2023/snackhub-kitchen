@@ -59,7 +59,7 @@ async def atualizar_status(id_pedido : int, status: int, db: Session):
         # Retorna o valor correspondente no dicionário
             stat = map_status[str(status)]
         reg = {
-            "order-id" : id_pedido,
+            "order-id" : int(id_pedido),
             "status" : stat 
         }
 
