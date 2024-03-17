@@ -63,9 +63,7 @@ async def atualizar_status(id_pedido : int, status: int, db: Session):
             "status" : stat 
         }
 
-        json_string = json.dumps(reg)
-
-        enviar_mensagem_saida(json_string)
+        enviar_mensagem_saida(reg)
 
         success_message = f"Pedido '{id_pedido}' atualizado com sucesso"
         return {"message": success_message}

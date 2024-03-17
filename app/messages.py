@@ -14,7 +14,7 @@ fila_order_status = sqs.get_queue_url(QueueName='order-status-topic')['QueueUrl'
 def enviar_mensagem_saida(mensagem):
     print(sqs.send_message(
         QueueUrl=fila_order_status,
-        MessageBody=json.dumps(mensagem),))
+        MessageBody=json.dumps(mensagem)))
 
 def processar_mensagens_entrada():
     while True:
